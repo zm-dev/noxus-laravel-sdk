@@ -13,13 +13,13 @@ use ZMDev\NoxusSDK\Exceptions\NoxusException;
 
 class AppClient
 {
-    private $config;
     private $appServiceClient;
+    private $rpcTimeout;
 
-    public function __construct($config)
+    public function __construct($rpcHostname, $rpcTimeout)
     {
-        $this->config = $config;
-        $this->appServiceClient = new AppServiceClient($this->config['rpc_hostname'], [
+        $this->rpcTimeout = $rpcTimeout;
+        $this->appServiceClient = new AppServiceClient($rpcHostname, [
             'credentials' => \Grpc\ChannelCredentials::createInsecure()
         ]);
     }
@@ -27,14 +27,13 @@ class AppClient
 
     public function validateApp($appID, $appSecret)
     {
-        $rpcTimeout = $this->config['rpc_timeout'];
         $appCredential = new AppCredential();
         $appCredential->setId($appID);
         $appCredential->setSecret($appSecret);
         /**
          * @var AppValidateRes $appValidateRes
          */
-        list($appValidateRes, $status) = $this->appServiceClient->ValidateApp($appCredential, [], ['timeout' => $rpcTimeout])->wait();
+        list($appValidateRes, $status) = $this->appServiceClient->ValidateApp($appCredential, [], ['timeout' => $this->rpcTimeout])->wait();
         if ($status->code != 0) {
             throw new NoxusException($status->details);
         }
@@ -43,13 +42,12 @@ class AppClient
 
     public function findApp($appID)
     {
-        $rpcTimeout = $this->config['rpc_timeout'];
         $pbAppID = new AppID();
         $pbAppID->setId($appID);
         /**
          * @var Application $application
          */
-        list($application, $status) = $this->appServiceClient->FindApp($pbAppID, [], ['timeout' => $rpcTimeout])->wait();
+        list($application, $status) = $this->appServiceClient->FindApp($pbAppID, [], ['timeout' => $this->rpcTimeout])->wait();
         if ($status->code != 0) {
             throw new NoxusException($status->details);
         }
@@ -58,14 +56,13 @@ class AppClient
 
     public function listApp($perPage, $page)
     {
-        $rpcTimeout = $this->config['rpc_timeout'];
         $appListReq = new AppListReq();
         $appListReq->setPage($page);
         $appListReq->setPerPage($perPage);
         /**
          * @var AppList $appList
          */
-        list($appList, $status) = $this->appServiceClient->ListApp($rpcTimeout, [], ['timeout' => $rpcTimeout])->wait();
+        list($appList, $status) = $this->appServiceClient->ListApp($appListReq, [], ['timeout' => $this->rpcTimeout])->wait();
         if ($status->code != 0) {
             throw new NoxusException($status->details);
         }
