@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package ZMDev.Noxus.pb;
+
+service AppService {
+    rpc ValidateApp (AppCredential) returns (AppValidateRes) {
+    }
+    rpc FindApp (AppID) returns (Application) {
+    }
+    rpc ListApp (AppListReq) returns (AppList) {
+    }
+}
+
+message AppValidateRes {
+    bool isValid = 1;
+}
+
+message AppCredential {
+    int32 id = 1;
+    string secret = 2;
+}
+
+
+message AppID {
+    int32 id = 1;
+}
+
+message ImageURL {
+    string original = 1;
+    string xs = 2;
+    string sm = 3;
+    string md = 4;
+    string lg = 5;
+}
+
+message Application {
+    int32 id = 1;
+    string logo_hash = 2;
+    ImageURL logo_url = 3;
+    int64 user_id = 4;
+    string url = 5;
+    string name = 6;
+    string description = 7;
+    bool revoked = 8;
+    int64 created_at = 9;
+    int64 updated_at = 10;
+    int64 deleted_at = 11;
+}
+
+
+message AppListReq {
+    int32 per_page = 1;
+    int32 page = 2;
+}
+
+message AppList {
+    repeated Application apps = 1;
+}

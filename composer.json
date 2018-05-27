@@ -1,0 +1,23 @@
+{
+    "name": "zm-dev/noxus_sdk",
+    "description": "noxus sdk",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "taoyu",
+            "email": "1255803549@qq.com"
+        }
+    ],
+    "require": {
+        "grpc/grpc": "^1.12",
+        "google/protobuf": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "ZMDev\\NoxusSDK\\": "src/",
+            "GPBMetadata\\": "GPBMetadata/",
+            "ZMDev\\Noxus\\Pb\\": "Pb/"
+        }
+    }
+}
